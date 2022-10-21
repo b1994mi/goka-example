@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"goka-example/handler"
 )
 
 func main() {
@@ -12,6 +13,10 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	h := handler.NewHandler()
+
+	r.GET("/", h.GetWalletHandler)
 
 	r.Run(":5000")
 }
