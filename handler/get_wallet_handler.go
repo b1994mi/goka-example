@@ -1,14 +1,17 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
+	"net/http"
+
+	"github.com/uptrace/bunrouter"
 )
 
-func (h *handler) GetWalletHandler(c *gin.Context) {
+func (h *handler) GetWalletHandler(w http.ResponseWriter, req bunrouter.Request) error {
 	resp, err := h.uc.GetWalletUsecase()
 	if err != nil {
-		c.JSON(422, gin.H{"message": err})
+		bunrouter.JSON(w, bunrouter.H{"message": err})
 	}
 
-	c.JSON(200, resp)
+	bunrouter.JSON(w, resp)
+	return nil
 }
