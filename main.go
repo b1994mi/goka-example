@@ -23,9 +23,10 @@ func main() {
 
 	// goka view
 	gv := initGokaView()
+	gv2 := initGokaView2()
 
 	// routes with handlers
-	h := handler.NewHandler(gv)
+	h := handler.NewHandler(gv, gv2)
 	r.GET("/wallet", h.GetWalletHandler)
 	r.POST("/wallet", h.PostWalletHandler)
 

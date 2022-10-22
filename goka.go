@@ -12,8 +12,10 @@ import (
 
 var (
 	brokers             = []string{"127.0.0.1:9092"}
-	topic   goka.Stream = "user-click"
-	group   goka.Group  = "mini-group"
+	topic   goka.Stream = "deposits"
+
+	aboveThresholdGroup goka.Group = "above-threshold-group"
+	balanceGroup        goka.Group = "balance-group"
 )
 
 type user struct {
@@ -21,7 +23,7 @@ type user struct {
 	Clicks int
 }
 
-func process(ctx goka.Context, msg interface{}) {
+func aboveThresholdProcess(ctx goka.Context, msg interface{}) {
 	var u *user
 	if val := ctx.Value(); val != nil {
 		u = val.(*user)
@@ -32,6 +34,20 @@ func process(ctx goka.Context, msg interface{}) {
 	u.Clicks++
 	ctx.SetValue(u)
 	fmt.Printf("[proc] key: %s clicks: %d, msg: %v\n", ctx.Key(), u.Clicks, msg)
+}
+
+func balanceProcess(ctx goka.Context, msg interface{}) {
+	var u *user
+	if val := ctx.Value(); val != nil {
+		u = val.(*user)
+	} else {
+		u = new(user)
+	}
+
+	u.Clicks++
+	ctx.SetValue(u)
+	fmt.Printf("Hello there, this is the second consumer\n")
+	fmt.Printf("[proc2] key2: %s clicks2: %d, msg2: %v\n", ctx.Key(), u.Clicks, msg)
 }
 
 func initGokaProcessor() {
@@ -49,13 +65,13 @@ func initGokaProcessor() {
 		log.Printf("Error creating kafka topic %s: %v", topic, err)
 	}
 
-	g := goka.DefineGroup(group,
-		goka.Input(topic, new(codec.String), process),
-		goka.Persist(new(userCodec)),
-	)
-
-	p, err := goka.NewProcessor(brokers,
-		g,
+	aboveThresholdProcessor, err := goka.NewProcessor(
+		brokers,
+		goka.DefineGroup(
+			aboveThresholdGroup,
+			goka.Input(topic, new(codec.String), aboveThresholdProcess),
+			goka.Persist(new(userCodec)),
+		),
 		goka.WithTopicManagerBuilder(goka.TopicManagerBuilderWithTopicManagerConfig(tmc)),
 		goka.WithConsumerGroupBuilder(goka.DefaultConsumerGroupBuilder),
 	)
@@ -63,7 +79,23 @@ func initGokaProcessor() {
 		panic(err)
 	}
 
-	go p.Run(context.Background())
+	go aboveThresholdProcessor.Run(context.Background())
+
+	balanceProcessor, err := goka.NewProcessor(
+		brokers,
+		goka.DefineGroup(
+			balanceGroup,
+			goka.Input(topic, new(codec.String), balanceProcess),
+			goka.Persist(new(userCodec)),
+		),
+		goka.WithTopicManagerBuilder(goka.TopicManagerBuilderWithTopicManagerConfig(tmc)),
+		goka.WithConsumerGroupBuilder(goka.DefaultConsumerGroupBuilder),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	go balanceProcessor.Run(context.Background())
 }
 
 type userCodec struct{}
@@ -90,7 +122,18 @@ func (jc *userCodec) Decode(data []byte) (interface{}, error) {
 }
 
 func initGokaView() *goka.View {
-	gv, err := goka.NewView(brokers, goka.GroupTable(group), new(userCodec))
+	gv, err := goka.NewView(brokers, goka.GroupTable(aboveThresholdGroup), new(userCodec))
+	if err != nil {
+		panic(err)
+	}
+
+	go gv.Run(context.Background())
+
+	return gv
+}
+
+func initGokaView2() *goka.View {
+	gv, err := goka.NewView(brokers, goka.GroupTable(balanceGroup), new(userCodec))
 	if err != nil {
 		panic(err)
 	}
