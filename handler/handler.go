@@ -2,14 +2,16 @@ package handler
 
 import (
 	"goka-example/usecase"
+
+	"github.com/lovoo/goka"
 )
 
 type handler struct {
 	uc *usecase.Usecase
 }
 
-func NewHandler() *handler {
-	uc := usecase.NewUsecase()
+func NewHandler(gv *goka.View) *handler {
+	uc := usecase.NewUsecase(gv)
 
 	return &handler{
 		uc,

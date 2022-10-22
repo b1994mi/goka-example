@@ -18,9 +18,16 @@ func main() {
 		return nil
 	})
 
-	h := handler.NewHandler()
+	// goka processor/consumer
+	initGokaProcessor()
 
+	// goka view
+	gv := initGokaView()
+
+	// routes with handlers
+	h := handler.NewHandler(gv)
 	r.GET("/wallet", h.GetWalletHandler)
+	r.POST("/wallet", h.PostWalletHandler)
 
 	port := ":5000"
 	log.Printf("running on port %v", port)
