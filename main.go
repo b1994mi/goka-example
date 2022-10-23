@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/uptrace/bunrouter"
+	"goka-example/config"
 	"goka-example/handler"
 )
 
@@ -19,14 +20,14 @@ func main() {
 	})
 
 	// goka processor/consumer
-	initGokaProcessor()
+	config.InitGokaProcessor()
 
 	// goka view
-	gv := initGokaView()
-	gv2 := initGokaView2()
+	atView := config.InitAboveThresholdView()
+	bView := config.InitBalanceView()
 
 	// routes with handlers
-	h := handler.NewHandler(gv, gv2)
+	h := handler.NewHandler(atView, bView)
 	r.GET("/wallet", h.GetWalletHandler)
 	r.POST("/wallet", h.PostWalletHandler)
 

@@ -4,22 +4,30 @@ import (
 	"fmt"
 	"time"
 
+	"goka-example/config"
+	"goka-example/model"
+	"goka-example/request"
+
 	"github.com/lovoo/goka"
-	"github.com/lovoo/goka/codec"
 )
 
-func (uc *Usecase) PostWalletUsecase() (interface{}, error) {
-	var topic goka.Stream = "user-click"
-
-	emitter, err := goka.NewEmitter([]string{"127.0.0.1:9092"}, topic, new(codec.String))
+func (uc *Usecase) PostWalletUsecase(req request.PostWallet) (interface{}, error) {
+	emitter, err := goka.NewEmitter(config.Brokers, config.Topic, new(config.TransactionCodec))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer emitter.Finish()
 
-	key := fmt.Sprintf("user")
-	value := fmt.Sprintf("%s", time.Now())
-	emitter.EmitSync(key, value)
+	err = emitter.EmitSync(
+		fmt.Sprintf("%d", req.WalletID),
+		&model.Transaction{
+			Amount: req.Amount,
+			Time:   time.Now(),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
 
 	return map[string]interface{}{"acknowledge": true}, nil
 }

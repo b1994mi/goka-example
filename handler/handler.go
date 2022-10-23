@@ -10,8 +10,8 @@ type handler struct {
 	uc *usecase.Usecase
 }
 
-func NewHandler(gv *goka.View, gv2 *goka.View) *handler {
-	uc := usecase.NewUsecase(gv, gv2)
+func NewHandler(aboveThresholdView *goka.View, balanceView *goka.View) *handler {
+	uc := usecase.NewUsecase(aboveThresholdView, balanceView)
 
 	return &handler{
 		uc,

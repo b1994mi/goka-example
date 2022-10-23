@@ -1,7 +1,7 @@
 package request
 
 type GetWallet struct {
-	WalletID int `json:"wallet_id"`
+	WalletID string `uri:"wallet_id"`
 }
 
 type PostWallet struct {

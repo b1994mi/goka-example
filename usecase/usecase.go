@@ -3,13 +3,13 @@ package usecase
 import "github.com/lovoo/goka"
 
 type Usecase struct {
-	gv  *goka.View
-	gv2 *goka.View
+	aboveThresholdView *goka.View
+	balanceView        *goka.View
 }
 
-func NewUsecase(gv *goka.View, gv2 *goka.View) *Usecase {
+func NewUsecase(aboveThresholdView *goka.View, balanceView *goka.View) *Usecase {
 	return &Usecase{
-		gv,
-		gv2,
+		aboveThresholdView,
+		balanceView,
 	}
 }
