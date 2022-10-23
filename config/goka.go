@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"goka-example/model"
 
@@ -15,8 +16,10 @@ var (
 	Brokers             = []string{"127.0.0.1:9092"}
 	Topic   goka.Stream = "deposits"
 
-	aboveThresholdGroup goka.Group = "above-threshold-group1"
-	balanceGroup        goka.Group = "balance-group1"
+	aboveThresholdGroup goka.Group = "above-threshold-group"
+	balanceGroup        goka.Group = "balance-group"
+
+	thresholdAmount float64 = 10000
 )
 
 func aboveThresholdProcess(ctx goka.Context, msg interface{}) {
@@ -30,7 +33,22 @@ func aboveThresholdProcess(ctx goka.Context, msg interface{}) {
 	m := msg.(*model.Transaction)
 
 	wt.Transactions = append(wt.Transactions, m)
-	fmt.Println(wt)
+
+	// check 2 minute rolling-period for threshold
+	lastTwoMin := time.Now().Add(-time.Minute * 2)
+	var trxAmtInLastTwoMin float64
+	for _, v := range wt.Transactions {
+		if v.Time.Before(lastTwoMin) {
+			continue
+		}
+
+		trxAmtInLastTwoMin += v.Amount
+	}
+	fmt.Printf("trx in last two min: %v\n", trxAmtInLastTwoMin)
+	if trxAmtInLastTwoMin > thresholdAmount {
+		wt.IsAboveThreshold = true
+	}
+
 	ctx.SetValue(wt)
 	fmt.Printf("[aboveThresholdProcess] key: %s, msg: %v\n", ctx.Key(), msg)
 }
