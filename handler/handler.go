@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"goka-example/usecase"
+	"github.com/b1994mi/goka-example/usecase"
 
 	"github.com/lovoo/goka"
 )

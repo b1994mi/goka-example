@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/uptrace/bunrouter"
-	"goka-example/request"
+	"github.com/b1994mi/goka-example/request"
 )
 
 func (h *handler) GetWalletHandler(w http.ResponseWriter, req bunrouter.Request) error {

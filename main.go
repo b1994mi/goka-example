@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/uptrace/bunrouter"
-	"goka-example/config"
-	"goka-example/handler"
+	"github.com/b1994mi/goka-example/config"
+	"github.com/b1994mi/goka-example/handler"
 )
 
 func main() {

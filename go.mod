@@ -1,4 +1,4 @@
-module goka-example
+module github.com/b1994mi/goka-example
 
 go 1.19
 

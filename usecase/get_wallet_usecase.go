@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"goka-example/model"
-	"goka-example/request"
-	"goka-example/response"
+	"github.com/b1994mi/goka-example/model"
+	"github.com/b1994mi/goka-example/request"
+	"github.com/b1994mi/goka-example/response"
 )
 
 func (uc *Usecase) GetWalletUsecase(req request.GetWallet) (interface{}, error) {

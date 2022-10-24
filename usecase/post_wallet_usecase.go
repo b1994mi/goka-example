@@ -3,9 +3,9 @@ package usecase
 import (
 	"fmt"
 
-	"goka-example/config"
-	"goka-example/model"
-	"goka-example/request"
+	"github.com/b1994mi/goka-example/config"
+	"github.com/b1994mi/goka-example/model"
+	"github.com/b1994mi/goka-example/request"
 
 	"github.com/lovoo/goka"
 	"google.golang.org/protobuf/types/known/timestamppb"

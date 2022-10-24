@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"goka-example/model"
+	"github.com/b1994mi/goka-example/model"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/lovoo/goka"
