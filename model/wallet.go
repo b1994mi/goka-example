@@ -1,19 +1,19 @@
 package model
 
-import (
-	"time"
-)
+// import (
+// 	"time"
+// )
 
-type Wallet struct {
-	Balance float64
-}
+// type Wallet struct {
+// 	Balance float64
+// }
 
-type WalletThreshold struct {
-	IsAboveThreshold bool
-	Transactions     []*Transaction
-}
+// type WalletThreshold struct {
+// 	IsAboveThreshold bool
+// 	Transactions     []*Transaction
+// }
 
-type Transaction struct {
-	Amount float64
-	Time   time.Time
-}
+// type Transaction struct {
+// 	Amount float64
+// 	Time   time.Time
+// }

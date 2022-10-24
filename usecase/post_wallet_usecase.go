@@ -2,13 +2,13 @@ package usecase
 
 import (
 	"fmt"
-	"time"
 
 	"goka-example/config"
 	"goka-example/model"
 	"goka-example/request"
 
 	"github.com/lovoo/goka"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (uc *Usecase) PostWalletUsecase(req request.PostWallet) (interface{}, error) {
@@ -22,7 +22,7 @@ func (uc *Usecase) PostWalletUsecase(req request.PostWallet) (interface{}, error
 		fmt.Sprintf("%d", req.WalletID),
 		&model.Transaction{
 			Amount: req.Amount,
-			Time:   time.Now(),
+			Time:   timestamppb.Now(),
 		},
 	)
 	if err != nil {

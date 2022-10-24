@@ -14,8 +14,20 @@ func (h *handler) GetWalletHandler(w http.ResponseWriter, req bunrouter.Request)
 		return nil
 	}
 
+	wIDwID, ok := req.Form["wallet_id"]
+	if !ok {
+		bunrouter.JSON(w, bunrouter.H{"message": "must include wallet_id in query params"})
+		return nil
+	}
+
+	withTrxWithTrx, ok := req.Form["with_trx"]
+	if !ok {
+		withTrxWithTrx = []string{""}
+	}
+
 	resp, err := h.uc.GetWalletUsecase(request.GetWallet{
-		WalletID: req.Form["wallet_id"][0],
+		WalletID: wIDwID[0],
+		WithTrx:  withTrxWithTrx[0],
 	})
 	if err != nil {
 		bunrouter.JSON(w, bunrouter.H{"message": err})

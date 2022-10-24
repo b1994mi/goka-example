@@ -2,13 +2,13 @@ package config
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"time"
 
 	"goka-example/model"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/lovoo/goka"
 )
 
@@ -38,7 +38,7 @@ func aboveThresholdProcess(ctx goka.Context, msg interface{}) {
 	lastTwoMin := time.Now().Add(-time.Minute * 2)
 	var trxAmtInLastTwoMin float64
 	for _, v := range wt.Transactions {
-		if v.Time.Before(lastTwoMin) {
+		if v.Time.AsTime().Before(lastTwoMin) {
 			continue
 		}
 
@@ -120,16 +120,17 @@ type walletCodec struct{}
 
 // Encodes a wallet into []byte
 func (jc *walletCodec) Encode(value interface{}) ([]byte, error) {
-	if _, isWallet := value.(*model.Wallet); !isWallet {
+	v, ok := value.(*model.Wallet)
+	if !ok {
 		return nil, fmt.Errorf("Codec requires value *Wallet, got %T", value)
 	}
-	return json.Marshal(value)
+	return proto.Marshal(v)
 }
 
 // Decodes a wallet from []byte to it's go representation.
 func (jc *walletCodec) Decode(data []byte) (interface{}, error) {
 	var w model.Wallet
-	err := json.Unmarshal(data, &w)
+	err := proto.Unmarshal(data, &w)
 	if err != nil {
 		return nil, fmt.Errorf("Error unmarshaling wallet: %v", err)
 	}
@@ -140,16 +141,17 @@ type walletThresholdCodec struct{}
 
 // Encodes a wallet threshold into []byte
 func (jc *walletThresholdCodec) Encode(value interface{}) ([]byte, error) {
-	if _, isWalletThreshold := value.(*model.WalletThreshold); !isWalletThreshold {
+	v, ok := value.(*model.WalletThreshold)
+	if !ok {
 		return nil, fmt.Errorf("Codec requires value *WalletThreshold, got %T", value)
 	}
-	return json.Marshal(value)
+	return proto.Marshal(v)
 }
 
 // Decodes a wallet threshold from []byte to it's go representation.
 func (jc *walletThresholdCodec) Decode(data []byte) (interface{}, error) {
 	var wt model.WalletThreshold
-	err := json.Unmarshal(data, &wt)
+	err := proto.Unmarshal(data, &wt)
 	if err != nil {
 		return nil, fmt.Errorf("Error unmarshaling wallet threshold: %v", err)
 	}
@@ -160,16 +162,17 @@ type TransactionCodec struct{}
 
 // Encodes a wallet threshold into []byte
 func (jc *TransactionCodec) Encode(value interface{}) ([]byte, error) {
-	if _, isTransaction := value.(*model.Transaction); !isTransaction {
+	v, ok := value.(*model.Transaction)
+	if !ok {
 		return nil, fmt.Errorf("Codec requires value *Transaction, got %T", value)
 	}
-	return json.Marshal(value)
+	return proto.Marshal(v)
 }
 
 // Decodes a wallet threshold from []byte to it's go representation.
 func (jc *TransactionCodec) Decode(data []byte) (interface{}, error) {
 	var t model.Transaction
-	err := json.Unmarshal(data, &t)
+	err := proto.Unmarshal(data, &t)
 	if err != nil {
 		return nil, fmt.Errorf("Error unmarshaling Transaction: %v", err)
 	}

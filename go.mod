@@ -3,8 +3,10 @@ module goka-example
 go 1.19
 
 require (
+	github.com/golang/protobuf v1.5.2
 	github.com/lovoo/goka v1.1.7
 	github.com/uptrace/bunrouter v1.0.19
+	google.golang.org/protobuf v1.26.0
 )
 
 require github.com/Shopify/sarama v1.37.2 // indirect

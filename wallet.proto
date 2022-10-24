@@ -1,0 +1,20 @@
+syntax = "proto3";
+package model;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./model";
+
+message Wallet {
+  double balance = 1;
+}
+
+message WalletThreshold {
+  bool is_above_threshold = 1;
+  repeated Transaction transactions = 2;
+}
+
+message Transaction {
+  double amount = 1;
+  google.protobuf.Timestamp time = 2;
+}
